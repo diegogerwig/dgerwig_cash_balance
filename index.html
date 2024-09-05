@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Balance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Bank Balance</h1>
+    <table id="balanceTable">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Info</th>
+                <th>Import</th>
+                <th>Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be filled here with JavaScript -->
+        </tbody>
+    </table>
+
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script>
+        const apiKey = '__GOOGLE_SHEETS_API_KEY__';
+        const spreadsheetId = '__SPREADSHEET_ID__';
+    </script>
+    <script>
+
+        function start() {
+            gapi.client.init({
+                // apiKey: 'YOUR_API_KEY', // Replace with your API key
+                discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4']
+            }).then(function () {
+                return gapi.client.sheets.spreadsheets.values.get({
+                    // spreadsheetId: 'YOUR_SPREADSHEET_ID', // Replace with your spreadsheet ID
+                    range: 'Sheet1!A2:D', // Adjust range to include all columns
+                });
+            }).then(function (response) {
+                const range = response.result.values;
+                const tableBody = document.querySelector('#balanceTable tbody');
+                range.forEach(row => {
+                    const tr = document.createElement('tr');
+                    row.forEach(cell => {
+                        const td = document.createElement('td');
+                        td.textContent = cell;
+                        tr.appendChild(td);
+                    });
+                    tableBody.appendChild(tr);
+                });
+            }, function (error) {
+                console.error('Error retrieving data: ', error);
+            });
+        }
+
+        gapi.load('client', start);
+    </script>
+</body>
+
+</html>
